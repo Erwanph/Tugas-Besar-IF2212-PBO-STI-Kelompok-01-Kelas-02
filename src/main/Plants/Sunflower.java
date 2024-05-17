@@ -1,4 +1,5 @@
-package main;
+package main.Plants;
+import main.Plant;
 
 public class Sunflower extends Plant {
     public Sunflower(){

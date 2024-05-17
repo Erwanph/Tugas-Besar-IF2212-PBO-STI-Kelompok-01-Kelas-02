@@ -1,4 +1,5 @@
-package main;
+package main.Plants;
+import main.Plant;
 
 public class Peashooter extends Plant{
     public Peashooter(){
