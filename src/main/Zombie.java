@@ -15,6 +15,7 @@ public abstract class Zombie extends GameObject {
         this.isSlowed = isSlowed;
         this.isAquatic = isAquatic;
     }
+    
     public int getSpeed(){
         return speed;
     }
