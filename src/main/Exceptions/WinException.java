@@ -1,4 +1,4 @@
-package main.Exception;
+package main.Exceptions;
 
 public class WinException {
     private int score;
