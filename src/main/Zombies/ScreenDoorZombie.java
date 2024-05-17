@@ -14,7 +14,5 @@ public class ScreenDoorZombie extends Zombie implements ZombieWithItem{
 
     public void setItemStatus(){
 
-        }
-        
     }
 }
