@@ -1,4 +1,5 @@
-package main;
+package main.Plants;
+import main.Plant;
 
 public class MagnetShroom extends Plant{
     private int abilityCooldown;
