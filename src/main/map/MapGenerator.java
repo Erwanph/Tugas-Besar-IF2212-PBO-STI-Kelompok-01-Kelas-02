@@ -61,11 +61,11 @@ public class MapGenerator {
                 }
 
                 // calculate position
-                int x = j*gamePanel.gridSize;
-                int y = i*gamePanel.gridSize;
+                int x = j*gamePanel.gridSizeX;
+                int y = i*gamePanel.gridSizeY;
                 
                 // TODO : DRAWING IMAGE
-                g.fillRect(x, y, gamePanel.gridSize, gamePanel.gridSize);
+                g.fillRect(x, y, gamePanel.gridSizeX, gamePanel.gridSizeY);
             }
         }
     }

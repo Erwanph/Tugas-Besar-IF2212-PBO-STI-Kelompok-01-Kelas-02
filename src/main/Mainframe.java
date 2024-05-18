@@ -9,11 +9,12 @@ import main.map.MapGenerator;
 
 public class Mainframe extends JPanel implements Runnable{
     // screen size calculations
-    public final int gridSize = 64; 
+    public final int gridSizeX = 85; 
+    public final int gridSizeY = 100; 
     public final int maxCol = 13;
     public final int maxRow = 9;
-    private final int screenWidth = gridSize*maxCol;
-    private final int screenHeight = gridSize*maxRow;
+    private final int screenWidth = gridSizeX*maxCol;
+    private final int screenHeight = gridSizeY*maxRow;
 
     // game loop
     Thread gameThread;
