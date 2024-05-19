@@ -7,9 +7,10 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import src.code.entity.Peashooter;
+import javax.swing.text.html.parser.Entity;
 
 public class Game extends JPanel implements Runnable {
     // 1000 x 750 screen size
@@ -19,7 +20,8 @@ public class Game extends JPanel implements Runnable {
     // background images
     private Image gameplayBackground;
 
-    Peashooter x = new Peashooter(this, 320, 180);
+    // list of entities currently in the game, each ArrayList represent entities in a row
+    private ArrayList<ArrayList<Entity>> EntityList;
 
     // game loop
     Thread gameLoop;
@@ -28,6 +30,7 @@ public class Game extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true); // optimization
+        EntityList = new ArrayList<>(6); // one for each row
         loadImage();
     }
 
@@ -81,8 +84,6 @@ public class Game extends JPanel implements Runnable {
 
         // draw background
         g2D.drawImage(gameplayBackground, 0, 0, this);
-
-        x.draw(g2D);
         
         // memory :)
         g2D.dispose();

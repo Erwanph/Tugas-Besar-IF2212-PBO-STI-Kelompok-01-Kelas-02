@@ -1,4 +1,4 @@
-package src.code.entity;
+package src.code.entity.plant;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -7,13 +7,20 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import src.code.main.Game;
 
-public class Peashooter extends Entity {
+public class Peashooter extends Plant {
     private final Image[] texture = new Image[77]; // Peashooter texture (animation/gif)
     private int frame = 0; // current frame to be drawn
 
     public Peashooter(Game game, int x, int y) 
     {
         super(game, x, y);
+        this.name = "Peashooter";
+        this.cost = 100;
+        this.health = 100;
+        this.attack_damage = 25;
+        this.attack_speed = 4;
+        this.range = -1;
+        this.cooldown = 10;
         renderTexture();
     }
 
@@ -41,6 +48,8 @@ public class Peashooter extends Entity {
     public void draw(Graphics2D g) {
         // since this method will be called 100 times a second (100 fps),
         // 77 Frame will be drawn smoothly without any augmented bottleneck
+
+        // draw a Peashooter (100x100 px)
         g.drawImage(texture[frame], this.posX, this.posY, this.posX+100, this.posY+100, 0,0,352,355,this.game);
         // move to next frame
         frame = (frame+1)%77;
@@ -48,7 +57,7 @@ public class Peashooter extends Entity {
 
     @Override
     public void update(Game game) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
     
 }

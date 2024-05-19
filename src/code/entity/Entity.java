@@ -7,6 +7,7 @@ public abstract class Entity {
     // set to protected for child-class access
     protected  int posX, posY; // Entity position in the game
     protected  Game game; // game data
+    protected String name;
 
     // to avoid being constructed publicly
     protected Entity(Game game, int x, int y)
