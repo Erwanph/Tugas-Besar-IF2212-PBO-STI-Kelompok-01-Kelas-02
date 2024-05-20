@@ -7,48 +7,49 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.text.html.parser.Entity;
+import src.code.entity.plant.Peashooter;
 
-public class Game extends JPanel implements Runnable {
+public class GamePanel extends JPanel implements Runnable {
     // 1000 x 750 screen size
     public final int screenWidth = 1000;
     public final int screenHeight = 750;
 
     // background images
-    private Image gameplayBackground;
-
-    // list of entities currently in the game, each ArrayList represent entities in a row
-    private ArrayList<ArrayList<Entity>> EntityList;
+    private Image gameplayBackgroundImage;    
 
     // game loop
-    Thread gameLoop;
+    private final Thread GAME_LOOP;
 
-    public Game() {
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.BLACK);
+    // list of game object
+    Peashooter x = new Peashooter(240, 180, this);
+
+    public GamePanel() {
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // set dimension
+        this.setBackground(Color.BLACK); // set default background color
         this.setDoubleBuffered(true); // optimization
-        EntityList = new ArrayList<>(6); // one for each row
-        loadImage();
+        GAME_LOOP = new Thread(this); // initiate game loop
+        renderBackground(); // render game background
     }
 
-    private void loadImage() {
+    private void renderBackground() {
         try {
-            gameplayBackground = ImageIO.read(new File("src\\assets\\image\\background\\GameplayBackground.png"));
+            gameplayBackgroundImage = ImageIO.read(new File("src\\assets\\image\\background\\GameplayBackground.png"));
         } catch (IOException ex) {
-            System.out.println("GameplayBackground Image NOT FOUND!");
+            System.out.println("GameplayBackgroundImage NOT FOUND!");
         }
     }
 
     public void startGame() {
-        gameLoop = new Thread(this);
-        gameLoop.start();
+        GAME_LOOP.start();
     }
+
 
     @Override
     public void run() {
+        // augmented bottleneck to maintain 100fps
+
         // redraw frame every 0.01 second or 100fps
         double interval = 10000000;
         // delta is the frame that should be drawn in the elapsed time
@@ -56,7 +57,7 @@ public class Game extends JPanel implements Runnable {
         // declare time
         long curTime, lastTime = System.nanoTime();
 
-        while (gameLoop != null) {
+        while (GAME_LOOP != null) {
             // get curTime
             curTime = System.nanoTime();
             // update delta
@@ -67,7 +68,7 @@ public class Game extends JPanel implements Runnable {
             // draw frame
             if(delta >= 1)
             {
-                repaint();
+                repaint(); // draw game components
                 // reset delta
                 delta--;
             }  
@@ -78,13 +79,17 @@ public class Game extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         // paint parent
         super.paintComponent(g);
-        
+
         // get instances of Graphics2D
         Graphics2D g2D = (Graphics2D) g;
 
         // draw background
-        g2D.drawImage(gameplayBackground, 0, 0, this);
+        g2D.drawImage(gameplayBackgroundImage, 0, 0, this);
         
+        x.draw(g2D);
+
+
+
         // memory :)
         g2D.dispose();
     }

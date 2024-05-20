@@ -1,24 +1,20 @@
 package src.code.entity;
 
-import java.awt.Graphics2D;
-import src.code.main.Game;
+import src.code.main.GamePanel;
 
-public abstract class Entity {
+public class Entity {
     // set to protected for child-class access
-    protected  int posX, posY; // Entity position in the game
-    protected  Game game; // game data
+    protected GamePanel gamePanel;
+    protected int Position_X;
+    protected int Position_Y;
+    protected int width;
+    protected int height;
     protected String name;
 
-    // to avoid being constructed publicly
-    protected Entity(Game game, int x, int y)
+    // set to protected to avoid being constructed publicly
+    protected Entity(int Position_X, int Position_Y, GamePanel gamePanel)
     {
-        this.game = game;
-        this.posX = x;
-        this.posY = y;
+        this.Position_X = Position_X;
+        this.Position_Y = Position_Y;
     }
-
-    // draw entity to game
-    public abstract void draw(Graphics2D g);
-    // update entity data per frame
-    public abstract void update(Game game);
 }

@@ -5,15 +5,20 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import src.code.main.Game;
+import src.code.entity.GameObject;
+import src.code.main.GamePanel;
 
-public class Peashooter extends Plant {
-    private final Image[] texture = new Image[77]; // Peashooter texture (animation/gif)
-    private int frame = 0; // current frame to be drawn
+public class Peashooter extends Plant implements GameObject{
+    // Peashooter's texture (gif)
+    private Image[] texture;
+    private int curFrame = 0; // current frame to draw
+    private int frameCount = 0; // count variable
 
-    public Peashooter(Game game, int x, int y) 
+    public Peashooter(int Position_X, int Position_Y, GamePanel gamePanel)
     {
-        super(game, x, y);
+        super(Position_X, Position_Y, gamePanel);
+        this.width = 100;
+        this.height = 100;
         this.name = "Peashooter";
         this.cost = 100;
         this.health = 100;
@@ -26,38 +31,36 @@ public class Peashooter extends Plant {
 
     private void renderTexture()
     {
-        // render all texture
+        // load texture images from path
+        texture = new Image[77];
         for(int i = 0; i < 77; i++)
         {
-            // path to peashooters's texture folder
             String path = "src\\assets\\image\\entity\\peashooter\\texture\\";
-
-            // generating path to the i-th texture
             if(i < 10) path += "0";
             path += String.valueOf(i);
             path += ".png";
-
             try {
-                // load texture
                 texture[i] = ImageIO.read(new File(path));
-            } catch (IOException ex) {System.out.println("Peashooter's Texture NOT FOUND!");}
+            } catch (IOException e) {System.out.println("Peashooter's texture NOT FOUND!");}
         }
     }
 
     @Override
-    public void draw(Graphics2D g) {
-        // since this method will be called 100 times a second (100 fps),
-        // 77 Frame will be drawn smoothly without any augmented bottleneck
-
-        // draw a Peashooter (100x100 px)
-        g.drawImage(texture[frame], this.posX, this.posY, this.posX+100, this.posY+100, 0,0,352,355,this.game);
-        // move to next frame
-        frame = (frame+1)%77;
+    public void draw(Graphics2D g2D) {
+        // draw animation every 2 frame (0.02 seconds)
+        g2D.drawImage(texture[curFrame], Position_X, Position_Y, Position_X+width, Position_Y+height, 0,0,352,355, gamePanel);
+        // keep track of frameCount
+        frameCount++;
+        if(frameCount == 2)
+        {
+            frameCount = 0;
+            curFrame = (curFrame+1)%77; // prepare to draw next frame
+        }
     }
 
     @Override
-    public void update(Game game) {
-        
+    public void update() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
 }

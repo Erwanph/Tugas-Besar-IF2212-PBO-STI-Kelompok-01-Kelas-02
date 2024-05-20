@@ -1,9 +1,9 @@
 package src.code.entity.plant;
 
 import src.code.entity.Entity;
-import src.code.main.Game;
+import src.code.main.GamePanel;
 
-public abstract class Plant extends Entity{
+public class Plant extends Entity{
     // set to protected for child-class access
     protected int cost;
     protected int health;
@@ -12,8 +12,9 @@ public abstract class Plant extends Entity{
     protected int range;
     protected int cooldown;
 
-    protected Plant(Game game, int x, int y)
+    // set to protected to avoid being constructed publicly
+    protected Plant(int Position_X, int Position_Y, GamePanel gamePanel)
     {
-        super(game, x, y);
+        super(Position_X, Position_Y, gamePanel);
     }
 }
