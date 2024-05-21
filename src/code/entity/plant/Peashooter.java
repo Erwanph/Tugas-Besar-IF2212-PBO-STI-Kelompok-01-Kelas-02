@@ -8,17 +8,16 @@ import javax.imageio.ImageIO;
 import src.code.entity.GameObject;
 import src.code.main.GamePanel;
 
-public class Peashooter extends Plant implements GameObject{
-    // Peashooter's texture (gif)
-    private Image[] texture;
-    private int curFrame = 0; // current frame to draw
-    private int frameCount = 0; // count variable
+public class Peashooter extends Plant implements GameObject {
 
-    public Peashooter(int Position_X, int Position_Y, GamePanel gamePanel)
-    {
+    private Image[] texture;
+    private int curFrame = 0; // current frame to be drawn
+    private int frameCount = 0; // internal clock (one frame is 0.01 seconds)
+
+    public Peashooter(int Position_X, int Position_Y, GamePanel gamePanel) {
         super(Position_X, Position_Y, gamePanel);
-        this.width = 100;
-        this.height = 100;
+        this.width = 80;
+        this.height = 80;
         this.name = "Peashooter";
         this.cost = 100;
         this.health = 100;
@@ -29,38 +28,37 @@ public class Peashooter extends Plant implements GameObject{
         renderTexture();
     }
 
-    private void renderTexture()
-    {
-        // load texture images from path
+    private void renderTexture() {
         texture = new Image[77];
-        for(int i = 0; i < 77; i++)
-        {
+        for (int i = 0; i < 77; i++) {
             String path = "src\\assets\\image\\entity\\peashooter\\texture\\";
-            if(i < 10) path += "0";
+            if (i < 10) {
+                path += "0";
+            }
             path += String.valueOf(i);
             path += ".png";
             try {
                 texture[i] = ImageIO.read(new File(path));
-            } catch (IOException e) {System.out.println("Peashooter's texture NOT FOUND!");}
+            } catch (IOException ex) {
+                System.out.println("Peashooter's texture NOT FOUND!");
+            }
         }
+
     }
 
     @Override
-    public void draw(Graphics2D g2D) {
-        // draw animation every 2 frame (0.02 seconds)
-        g2D.drawImage(texture[curFrame], Position_X, Position_Y, Position_X+width, Position_Y+height, 0,0,352,355, gamePanel);
-        // keep track of frameCount
-        frameCount++;
-        if(frameCount == 2)
-        {
-            frameCount = 0;
-            curFrame = (curFrame+1)%77; // prepare to draw next frame
-        }
+    public void draw(Graphics2D g2d) {
+        g2d.drawImage(texture[curFrame], Position_X, Position_Y, Position_X + width, Position_Y + width, 0, 0, 352, 355, gamePanel);
     }
 
     @Override
     public void update() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // update frame to draw every 0.05 seconds
+        if (frameCount == 2) {
+            curFrame = (curFrame + 1) % 77;
+            frameCount = 0;
+        }
+        frameCount++;
     }
 
 }

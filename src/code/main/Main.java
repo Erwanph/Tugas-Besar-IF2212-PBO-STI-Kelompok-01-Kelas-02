@@ -2,11 +2,11 @@ package src.code.main;
 
 import javax.swing.JFrame;
 
-public class Main 
-{
+public class Main {
+
     private static JFrame frame;
     private static GamePanel gamePanel;
-    
+
     public static void main(String[] args) {
         // Initiate frame that contains the game
         frame = new JFrame();
@@ -17,7 +17,7 @@ public class Main
         frame.setTitle("MICHAEL VS LALAPAN");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-        
+
         // add game to the window
         frame.add(gamePanel);
         frame.pack();
