@@ -72,9 +72,9 @@ gradlew.bat run
 
 You can explore more about gradle [here](https://guides.gradle.org/creating-new-gradle-builds/)
 
-<a name="game-sneak-peak"></a>
+<a name="game-sneak-peek"></a>
 
-## Game Sneak Peak
+## Game Sneak Peek
 
 
 <a name="project-status">
