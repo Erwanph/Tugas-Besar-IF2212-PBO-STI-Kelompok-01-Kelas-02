@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import src.code.entity.GameObject;
-import src.code.main.GamePanel;
+import src.code.func.GamePanel;
 
 public class Lilypad extends Plant implements GameObject {
 
@@ -16,8 +16,8 @@ public class Lilypad extends Plant implements GameObject {
 
     public Lilypad(int Position_X, int Position_Y, GamePanel gamePanel) {
         super(Position_X, Position_Y, gamePanel);
-        this.width = 100;
-        this.height = 100;
+        this.width = 80;
+        this.height = 80;
         this.name = "Lilypad";
         this.cost = 100;
         this.health = 100;
@@ -38,7 +38,7 @@ public class Lilypad extends Plant implements GameObject {
 
     @Override
     public void draw(Graphics2D g2d) {
-        g2d.drawImage(texture, Position_X, Position_Y, Position_X + width, Position_Y + width, 0, 0, 225, 225, gamePanel);
+        g2d.drawImage(texture, Position_X, Position_Y, Position_X + width, Position_Y + width, 10, 0, 200, 190, gamePanel);
     }
 
     @Override

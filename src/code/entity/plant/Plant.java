@@ -1,7 +1,7 @@
 package src.code.entity.plant;
 
 import src.code.entity.Entity;
-import src.code.main.GamePanel;
+import src.code.func.GamePanel;
 
 public class Plant extends Entity {
 

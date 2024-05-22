@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import src.code.entity.GameObject;
-import src.code.main.GamePanel;
+import src.code.func.GamePanel;
 
 public class Snowpea extends Plant implements GameObject {
 

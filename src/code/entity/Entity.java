@@ -1,6 +1,6 @@
 package src.code.entity;
 
-import src.code.main.GamePanel;
+import src.code.func.GamePanel;
 
 public class Entity {
 

@@ -1,6 +1,7 @@
 package src.code.main;
 
 import javax.swing.JFrame;
+import src.code.func.GamePanel;
 
 public class Main {
 
