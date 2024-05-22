@@ -19,7 +19,7 @@
 3. [Features](#features)
 4. [Technologies Used](#technologies-used)
 5. [How to Run Game](#how-run)
-6. [Game Sneak Peak](#game-sneak-peak)
+6. [Game Sneak Peek](#game-sneak-peek)
 7. [Project Status](#project-status)
 
 ## General Information
