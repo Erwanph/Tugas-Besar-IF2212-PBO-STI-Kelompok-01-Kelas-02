@@ -5,29 +5,31 @@ import src.code.func.GameManager;
 
 public class Main {
 
+    // Frame that contains the game
     private static JFrame frame;
+    // GameManager control the whole game
     private static GameManager gameManager;
 
     public static void main(String[] args) {
-        // Initiate frame that contains the game
+        // Initiate JFrame
         frame = new JFrame();
-        // Initiate the game
+        // Initiate GameManager
         gameManager = new GameManager();
 
-        // window's settings
+        // JFrame's settings
         frame.setTitle("MICHAEL VS LALAPAN");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
 
-        // add game to the window
+        // Load game into the JFrame
         frame.add(gameManager);
         frame.pack();
 
-        // preview windowW
+        // Preview JFrame
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        // start game
+        // Start the game
         gameManager.startGame();
     }
 }
