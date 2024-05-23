@@ -4,14 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
 import src.code.entity.GameObject;
@@ -27,44 +23,47 @@ public class GameManager extends JPanel implements Runnable, MouseInputListener 
     public final int SCREEN_WIDTH = 1000;
     public final int SCREEN_HEIGHT = 750;
 
-    // game variables
+    // Game Thread
     private final Thread GAME_LOOP;
+    // List of all Plants in the game
     public List<Class<?>> plantAlmanac;
+    // BackgroundManager handle the behind-the-screen operation
     public BackgroundManager backgroundManager;
+    // DeckManager handle the operations within game deck
     public DeckManager deckManager;
+    // renderList contains all the game object to be rendered
     public List<GameObject> renderList;
+    // Game state
     private String gameState;
 
-    Image check;
-
+    // Constructor
     public GameManager() {
-        // set dimension
+        // Set dimension
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        // set default background color
+        // Set default background color
         setBackground(Color.white);
-        // optimization
+        // Rendering Optimization
         setDoubleBuffered(true);
 
-        // initialization
-        GAME_LOOP = new Thread(this); // initiate game loop
-        generateAlmanac(); // generate plant almanac
+        // Initiate GAME_LOOP
+        GAME_LOOP = new Thread(this);
+        // Generate plantAlmanac
+        generateAlmanac();
+        // Initiate backgroundManager
         backgroundManager = new BackgroundManager(this);
+        // Initiate deckManager
         deckManager = new DeckManager(this);
-        renderList = new ArrayList<>(); // initiate list of game objects
+        // Initiate renderList
+        renderList = new ArrayList<>();
 
-        // default game state
-        gameState = "SELECT TRANSITION";
-
-        try {
-            check = ImageIO.read(new File("src\\assets\\image\\func\\Squash_InGameCard.png"));
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        // Default gameState
+        setGameState("MENU");
     }
 
+    // Generate the plantAlmanac list
     private void generateAlmanac() {
         plantAlmanac = new ArrayList<>();
+        // Contains all implemented plant classes
         plantAlmanac.add(Peashooter.class);
         plantAlmanac.add(Snowpea.class);
         plantAlmanac.add(Squash.class);
@@ -72,101 +71,102 @@ public class GameManager extends JPanel implements Runnable, MouseInputListener 
         plantAlmanac.add(Sunflower.class);
     }
 
+    // Start Game
     public void startGame() {
+        // Start the Thread
         GAME_LOOP.start();
+        // Adding mouse listener to get user's input
         addMouseListener(this);
         addMouseMotionListener(this);
     }
 
+    // Thread built-in method
     @Override
     public void run() {
-        // augmented bottleneck to maintain 100fps
+        // Augmented bottleneck to maintain 100fps
 
-        // redraw frame every 0.01 second or 100fps
+        // Redraw frame every 0.01 second or 100fps
         double interval = 10000000;
-        // delta is the frame that should be drawn in the elapsed time
+        // Delta is the frame that should be drawn in the elapsed time
         double delta = 0;
-        // declare time
+        // Declare current time and last draw time
         long curTime, lastTime = System.nanoTime();
 
         while (GAME_LOOP != null) {
-            curTime = System.nanoTime(); // get curTime
-            delta += (curTime - lastTime) / interval; // update delta
+            // Get current time
+            curTime = System.nanoTime();
+            // Update delta
+            delta += (curTime - lastTime) / interval;
+            // Update last draw time
             lastTime = curTime;
 
-            // draw frame
+            // Draw frame
             if (delta >= 1) {
-                update(); // update every component
-                repaint(); // draw game components
-                // reset delta
+                update(); // Update every component
+                repaint(); // Draw game components
+                // Reset delta
                 delta--;
             }
         }
     }
 
-    public void update() {
-        // update every component in the render list
+    // Update method
+    private void update() {
+        // update every GameObject in the render list
         for (Iterator<GameObject> i = renderList.iterator(); i.hasNext();) {
             (i.next()).update();
         }
     }
 
+    // JPanel built-in paintComponent method
     @Override
     public void paintComponent(Graphics g) {
-        // paint parent
+        // Paint Parent
         super.paintComponent(g);
 
-        // get instances of Graphics2D
+        // Get instances of Graphics2D
         Graphics2D g2D = (Graphics2D) g;
 
-        // draw background
+        // Draw background
         backgroundManager.drawBackground(g2D);
+        // Draw deck
         deckManager.drawDeck(g2D);
 
-        //draw every component in the render list
+        // Draw all GameObject in the renderList
         for (Iterator<GameObject> i = renderList.iterator(); i.hasNext();) {
             (i.next()).draw(g2D);
         }
 
-        // memory :)
+        // Memory friendly :)
         {
             g2D.dispose();
         }
     }
 
-    public String getGameState() {
+    // gameState getter
+    public final String getGameState() {
         return gameState;
     }
 
-    public void setGameState(String gameState) {
+    // gameState setter
+    public final void setGameState(String gameState) {
         this.gameState = gameState;
     }
 
+    // Built-in MouseInputListener methods
     @Override
-    public void mouseClicked(MouseEvent e) {
-        System.out.printf("%d %d\n", e.getX(), e.getY());
-        switch (getGameState()) {
-            case "SELECT TRANSITION" -> {
-                setGameState("SELECT");
-            }
-            case "SELECT" -> {
-                backgroundManager.checkClick(e.getX(), e.getY());
-                deckManager.handleClick(e.getX(), e.getY());
-            }
-            default ->
-                throw new AssertionError();
-        }
+    public final void mouseClicked(MouseEvent e) {
+        backgroundManager.handleClick(e.getX(), e.getY());
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        // System.out.printf("PRESSED IN X : %d Y : %d\n", e.getX(), e.getY());
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         // System.out.printf("RELEASED IN X = %d Y = %d\n", e.getX(), e.getY());
-
     }
 
     @Override
