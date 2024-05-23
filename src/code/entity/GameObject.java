@@ -7,5 +7,4 @@ public interface GameObject {
     public abstract void draw(Graphics2D g2D);
 
     public abstract void update();
-    // public abstract boolean isAlive();
 }

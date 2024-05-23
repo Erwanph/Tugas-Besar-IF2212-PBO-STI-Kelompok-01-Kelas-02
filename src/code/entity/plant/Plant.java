@@ -1,7 +1,7 @@
 package src.code.entity.plant;
 
 import src.code.entity.Entity;
-import src.code.func.GamePanel;
+import src.code.func.GameManager;
 
 public class Plant extends Entity {
 
@@ -14,7 +14,7 @@ public class Plant extends Entity {
     protected int cooldown;
 
     // set to protected to avoid being constructed publicly
-    protected Plant(int Position_X, int Position_Y, GamePanel gamePanel) {
+    protected Plant(int Position_X, int Position_Y, GameManager gamePanel) {
         super(Position_X, Position_Y, gamePanel);
     }
 

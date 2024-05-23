@@ -1,18 +1,18 @@
 package src.code.main;
 
 import javax.swing.JFrame;
-import src.code.func.GamePanel;
+import src.code.func.GameManager;
 
 public class Main {
 
     private static JFrame frame;
-    private static GamePanel gamePanel;
+    private static GameManager gameManager;
 
     public static void main(String[] args) {
         // Initiate frame that contains the game
         frame = new JFrame();
         // Initiate the game
-        gamePanel = new GamePanel();
+        gameManager = new GameManager();
 
         // window's settings
         frame.setTitle("MICHAEL VS LALAPAN");
@@ -20,7 +20,7 @@ public class Main {
         frame.setResizable(false);
 
         // add game to the window
-        frame.add(gamePanel);
+        frame.add(gameManager);
         frame.pack();
 
         // preview windowW
@@ -28,6 +28,6 @@ public class Main {
         frame.setVisible(true);
 
         // start game
-        gamePanel.startGame();
+        gameManager.startGame();
     }
 }

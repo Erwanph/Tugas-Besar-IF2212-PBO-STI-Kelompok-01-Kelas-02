@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import src.code.entity.GameObject;
-import src.code.func.GamePanel;
+import src.code.func.GameManager;
 
 public class Peashooter extends Plant implements GameObject {
 
@@ -16,7 +16,7 @@ public class Peashooter extends Plant implements GameObject {
     private int curFrame = 0; // current frame to be drawn
     private int frameCount = 0; // internal clock (one frame is 0.01 seconds)
 
-    public Peashooter(int Position_X, int Position_Y, GamePanel gamePanel) {
+    public Peashooter(int Position_X, int Position_Y, GameManager gamePanel) {
         super(Position_X, Position_Y, gamePanel);
         this.width = 80;
         this.height = 80;

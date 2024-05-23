@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,50 +13,69 @@ import java.util.Iterator;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.event.MouseInputListener;
 import src.code.entity.GameObject;
+import src.code.entity.plant.Lilypad;
+import src.code.entity.plant.Peashooter;
+import src.code.entity.plant.Snowpea;
+import src.code.entity.plant.Squash;
+import src.code.entity.plant.Sunflower;
 
-public class GamePanel extends JPanel implements Runnable, MouseListener {
+public class GameManager extends JPanel implements Runnable, MouseInputListener {
 
     // 1000 x 750 screen size
     public final int SCREEN_WIDTH = 1000;
     public final int SCREEN_HEIGHT = 750;
 
-    // background images
-    private Image gameplayBackgroundImage;
-
-    // game loop
+    // game variables
     private final Thread GAME_LOOP;
-    private GameDeck gameDeck;
-
-    // list of game object to be rendered
+    public List<Class<?>> plantAlmanac;
+    public BackgroundManager backgroundManager;
+    public DeckManager deckManager;
     public List<GameObject> renderList;
+    private String gameState;
 
-    public GamePanel() {
+    Image check;
+
+    public GameManager() {
         // set dimension
-        this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+        setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         // set default background color
-        this.setBackground(Color.white);
+        setBackground(Color.white);
         // optimization
-        this.setDoubleBuffered(true);
+        setDoubleBuffered(true);
 
         // initialization
         GAME_LOOP = new Thread(this); // initiate game loop
-        gameDeck = new GameDeck(this);
+        generateAlmanac(); // generate plant almanac
+        backgroundManager = new BackgroundManager(this);
+        deckManager = new DeckManager(this);
         renderList = new ArrayList<>(); // initiate list of game objects
-        renderBackground(); // render game background
+
+        // default game state
+        gameState = "SELECT TRANSITION";
+
+        try {
+            check = ImageIO.read(new File("src\\assets\\image\\func\\Squash_InGameCard.png"));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
-    private void renderBackground() {
-        try {
-            gameplayBackgroundImage = ImageIO.read(new File("src\\assets\\image\\background\\GameplayBackground.png"));
-        } catch (IOException ex) {
-            System.out.println("GameplayBackgroundImage NOT FOUND!");
-        }
+    private void generateAlmanac() {
+        plantAlmanac = new ArrayList<>();
+        plantAlmanac.add(Peashooter.class);
+        plantAlmanac.add(Snowpea.class);
+        plantAlmanac.add(Squash.class);
+        plantAlmanac.add(Lilypad.class);
+        plantAlmanac.add(Sunflower.class);
     }
 
     public void startGame() {
         GAME_LOOP.start();
-        this.addMouseListener(this);
+        addMouseListener(this);
+        addMouseMotionListener(this);
     }
 
     @Override
@@ -101,11 +119,9 @@ public class GamePanel extends JPanel implements Runnable, MouseListener {
         // get instances of Graphics2D
         Graphics2D g2D = (Graphics2D) g;
 
-        //draw background
-        g2D.drawImage(gameplayBackgroundImage, 0, 0, this);
-
-        //draw deck
-        gameDeck.draw(g2D);
+        // draw background
+        backgroundManager.drawBackground(g2D);
+        deckManager.drawDeck(g2D);
 
         //draw every component in the render list
         for (Iterator<GameObject> i = renderList.iterator(); i.hasNext();) {
@@ -118,10 +134,28 @@ public class GamePanel extends JPanel implements Runnable, MouseListener {
         }
     }
 
-    // MouseListener method
+    public String getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(String gameState) {
+        this.gameState = gameState;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        System.out.printf("%d %d\n", e.getX(), e.getY());
+        switch (getGameState()) {
+            case "SELECT TRANSITION" -> {
+                setGameState("SELECT");
+            }
+            case "SELECT" -> {
+                backgroundManager.checkClick(e.getX(), e.getY());
+                deckManager.handleClick(e.getX(), e.getY());
+            }
+            default ->
+                throw new AssertionError();
+        }
     }
 
     @Override
@@ -131,16 +165,27 @@ public class GamePanel extends JPanel implements Runnable, MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        // System.out.printf("RELEASED IN X = %d Y = %d\n", e.getX(), e.getY());
 
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
+        // System.out.printf("ENTERED IN X = %d Y = %d\n", e.getX(), e.getY());
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+        // System.out.printf("EXITED IN X = %d Y = %d\n", e.getX(), e.getY());
+    }
 
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        // System.out.printf("DRAGGED IN X = %d Y = %d\n", e.getX(), e.getY());
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        // System.out.printf("MOVED IN X = %d Y = %d\n", e.getX(), e.getY());
     }
 }
