@@ -36,6 +36,9 @@ public class IcePea extends Entity implements GameObject {
     @Override
     public void update() {
         Position_X++;
+        if (Position_X > 1000) {
+            alive = false;
+        }
     }
 
     @Override
