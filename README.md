@@ -10,7 +10,7 @@
 
 > Game Spesification [_here_](https://docs.google.com/document/d/19BsdEXRQh0wSgIis_oG5bRA8q5vD2_yU0hlC-VuJ-UI/edit)
 
-> Game Booklet (Soon) [_here_]()
+> Game Booklet [_here_](https://drive.google.com/file/d/1fMzkcvUXE53AajvnVTPA9jspg223MIQ4/view?usp=sharing)
 
 
 ## Table of Contents
