@@ -19,12 +19,19 @@ public class Lilypad extends Plant implements GameObject {
         this.width = 80;
         this.height = 80;
         this.name = "Lilypad";
-        this.cost = 100;
         this.health = 100;
         this.attack_damage = 25;
         this.attack_speed = 4;
+        alive = true;
+
         this.range = -1;
-        this.cooldown = 10;
+
+        // Fixing position to next plant
+        if (Position_X != -1 && Position_Y != -1) {
+            gamePanel.positionArray[(Position_Y - 210) / 85][(Position_X - 250) / 78].x += 5;
+            gamePanel.positionArray[(Position_Y - 210) / 85][(Position_X - 250) / 78].y -= 10;
+        }
+
         renderTexture();
     }
 
@@ -38,11 +45,36 @@ public class Lilypad extends Plant implements GameObject {
 
     @Override
     public void draw(Graphics2D g2d) {
-        g2d.drawImage(texture, Position_X, Position_Y, Position_X + width, Position_Y + width, 10, 0, 200, 190, gamePanel);
+        g2d.drawImage(texture, Position_X, Position_Y, Position_X + width, Position_Y + width, 10, 0, 200, 190, gameManager);
     }
 
     @Override
     public void update() {
         // TODO : LILYPAD ANIMATION?
+    }
+
+    @Override
+    public boolean isAlive() {
+        return alive;
+    }
+
+    @Override
+    public int getCooldown() {
+        return 10;
+    }
+
+    @Override
+    public int getCost() {
+        return 25;
+    }
+
+    @Override
+    public String getName() {
+        return "Lilypad";
+    }
+
+    @Override
+    public void setRow(int i) {
+        row = i;
     }
 }

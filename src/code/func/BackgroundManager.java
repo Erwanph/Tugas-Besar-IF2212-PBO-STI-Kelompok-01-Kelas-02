@@ -2,6 +2,7 @@ package src.code.func;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.File;
@@ -9,7 +10,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import javax.imageio.ImageIO;
 import src.code.entity.GameObject;
-import src.code.entity.plant.Peashooter;
 
 public class BackgroundManager {
 
@@ -19,6 +19,7 @@ public class BackgroundManager {
     private Image[] backgroundImages;
     // Array of in-game plant card images
     public Image[] inGameCard;
+    public Image[] inGameCard_CoolDown;
     // Array of in-game plant almanac images
     public Image[] inGameAlmanac;
     // Internal timer
@@ -57,12 +58,17 @@ public class BackgroundManager {
 
         // Load inGameCard
         inGameCard = new Image[gameManager.plantAlmanac.size()];
+        inGameCard_CoolDown = new Image[gameManager.plantAlmanac.size()];
         try {
             for (int i = 0; i < gameManager.plantAlmanac.size(); i++) {
                 String path = "src\\assets\\image\\func\\";
+                String path_cooldown = "src\\assets\\image\\func\\";
                 path += gameManager.plantAlmanac.get(i).getSimpleName();
+                path_cooldown += gameManager.plantAlmanac.get(i).getSimpleName();
                 path += "_InGameCard.png";
+                path_cooldown += "_InGameCard_Cooldown.png";
                 inGameCard[i] = ImageIO.read(new File(path));
+                inGameCard_CoolDown[i] = ImageIO.read(new File(path_cooldown));
             }
         } catch (IOException ex) {
             System.out.println("inGameCard IMAGES NOT FOUND!");
@@ -183,14 +189,33 @@ public class BackgroundManager {
                 }
             }
             case "GAME" -> {
+                // Draw background
                 g2D.drawImage(backgroundImages[1], 0, 0, gameManager);
                 g2D.drawImage(backgroundImages[3], 0, 0, 565, 120, 0, 0, 1138, 219, gameManager);
+                g2D.setFont(new Font("default", Font.BOLD, 16));
+                g2D.drawString(String.valueOf(gameManager.sunManager.getSun()), 25, 105);
+
+                // Draw card
                 for (int i = 0; i < gameManager.deckManager.deck.size(); i++) {
-                    g2D.drawImage(inGameCard[gameManager.deckManager.deck.get(i)], 95 + i * 77, 5, 95 + (i + 1) * 77, 110, 0, 0, 50, 70, gameManager);
+                    if (gameManager.deckManager.goToCooldown.get(i) > 0) {
+                        g2D.drawImage(inGameCard_CoolDown[gameManager.deckManager.deck.get(i)], 95 + i * 77, 5, 95 + (i + 1) * 77, 110, 0, 0, 50, 70, gameManager);
+                        g2D.setFont(new Font("default", Font.BOLD, 16));
+                        g2D.drawString(String.valueOf(gameManager.deckManager.goToCooldown.get(i) / 100), 95 + i * 77 + 30, 50);
+                        gameManager.deckManager.goToCooldown.set(i, gameManager.deckManager.goToCooldown.get(i) - 1);
+                    } else if (gameManager.deckManager.cost.get(i) > gameManager.sunManager.getSun()) {
+                        g2D.drawImage(inGameCard_CoolDown[gameManager.deckManager.deck.get(i)], 95 + i * 77, 5, 95 + (i + 1) * 77, 110, 0, 0, 50, 70, gameManager);
+                    } else {
+                        g2D.drawImage(inGameCard[gameManager.deckManager.deck.get(i)], 95 + i * 77, 5, 95 + (i + 1) * 77, 110, 0, 0, 50, 70, gameManager);
+                    }
+
                 }
                 if (selectedCard != -1) {
                     g2D.setStroke(new BasicStroke(7));
-                    g2D.setColor(Color.yellow);
+                    if (gameManager.deckManager.cost.get(selectedCard) <= gameManager.sunManager.getSun() && gameManager.deckManager.goToCooldown.get(selectedCard) == 0) {
+                        g2D.setColor(Color.yellow);
+                    } else {
+                        g2D.setColor(Color.gray);
+                    }
                     g2D.drawRect(95 + selectedCard * 77, 5, 77, 100);
                 }
             }
@@ -199,21 +224,26 @@ public class BackgroundManager {
         }
     }
 
-    /**
-     *
-     * @param x
-     * @param y
-     */
     public final void handleClick(int x, int y) throws SecurityException {
         switch (gameManager.getGameState()) {
             case "MENU" -> {
                 if (x >= 609 && x <= 876 && y >= 387 && y <= 448) {
+
                     gameManager.setGameState("TRANSITION_IN_SELECT");
                 }
             }
             case "SELECT" -> {
                 if (checkPoint(x, y, 193, 683, 385, 730)) {
                     selectedCard = -1;
+                    try {
+                        for (int i = 0; i < gameManager.deckManager.deck.size(); i++) {
+                            GameObject curObject = (GameObject) gameManager.plantAlmanac.get(gameManager.deckManager.deck.get(i)).getConstructor(int.class, int.class, GameManager.class).newInstance(-1, -1, gameManager);
+                            gameManager.deckManager.totalCooldown.set(i, curObject.getCooldown() * 100);
+                            gameManager.deckManager.cost.set(i, curObject.getCost());
+                        }
+                    } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
+                        System.out.println("CANNOT INSTANTIATE");
+                    }
                     gameManager.setGameState("TRANSITION_OUT_SELECT");
                 } else if (checkPoint(x, y, 16, 152, 565, 614)) {
                     int column = (x - 16) / 61;
@@ -241,18 +271,52 @@ public class BackgroundManager {
                     if (index < gameManager.deckManager.deck.size()) {
                         selectedCard = index;
                     }
+                    // Check if sun is sufficient
+                    try {
+                        GameObject curObject = (GameObject) gameManager.plantAlmanac.get(gameManager.deckManager.deck.get(selectedCard)).getConstructor(int.class, int.class, GameManager.class).newInstance(-1, -1, gameManager);
+                        if (curObject.getCost() > gameManager.sunManager.getSun()) {
+                            selectedCard = -1;
+                        }
+                    } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
+                        System.out.println("CANNOT INSTANTIATE");
+                    }
+
                 } // Click happening inside planting area
                 else if (checkPoint(x, y, 250, 210, 952, 720)) {
-                    int row = (y - 210) / 85;
                     int col = (x - 250) / 78;
+                    int row = (y - 210) / 85;
+
                     try {
-                        try {
-                            gameManager.objectList.add((GameObject) gameManager.plantAlmanac.get(gameManager.deckManager.deck.get(selectedCard)).getConstructor(int.class, int.class, GameManager.class).newInstance(Peashooter.getPosition(row, col).x, Peashooter.getPosition(row, col).y, gameManager));
-                        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                            System.out.println("CANNOT INSTANTIATE");
+                        GameObject curObject = (GameObject) gameManager.plantAlmanac.get(gameManager.deckManager.deck.get(selectedCard)).getConstructor(int.class, int.class, GameManager.class).newInstance(gameManager.getPlantingPosition(row, col).x, gameManager.getPlantingPosition(row, col).y, gameManager);
+                        curObject.setRow(row);
+                        if (curObject.getCost() <= gameManager.sunManager.getSun()) {
+                            if (row >= 2 && row <= 3) {
+                                if (curObject.getName().equals("Lilypad")) {
+                                    if (gameManager.elementInGrid[row][col] == 0) {
+                                        gameManager.addObject(curObject);
+                                        gameManager.deckManager.goToCooldown.set(selectedCard, curObject.getCooldown() * 100);
+                                        gameManager.elementInGrid[row][col] = 1;
+                                    }
+                                } else {
+                                    if (gameManager.elementInGrid[row][col] == 1) {
+                                        gameManager.addObject(curObject);
+                                        gameManager.deckManager.goToCooldown.set(selectedCard, curObject.getCooldown() * 100);
+                                        gameManager.elementInGrid[row][col] = 2;
+                                    }
+                                }
+                            } else {
+                                if (!curObject.getName().equals("Lilypad")) {
+                                    if (gameManager.elementInGrid[row][col] == 0) {
+                                        gameManager.addObject(curObject);
+                                        gameManager.deckManager.goToCooldown.set(selectedCard, curObject.getCooldown() * 100);
+                                        gameManager.elementInGrid[row][col] = 1;
+                                    }
+                                }
+
+                            }
                         }
-                    } catch (NoSuchMethodException ex) {
-                        System.out.println("Constructor NOT FOUND!");
+                    } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
+                        System.out.println("CANNOT INSTANTIATE");
                     }
                 }
 
@@ -266,4 +330,5 @@ public class BackgroundManager {
     private boolean checkPoint(int x, int y, int topLeftX, int topLeftY, int bottomRightX, int bottomRightY) {
         return x >= topLeftX && x <= bottomRightX && y >= topLeftY && y <= bottomRightY;
     }
+
 }

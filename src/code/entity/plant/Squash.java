@@ -19,12 +19,12 @@ public class Squash extends Plant implements GameObject {
         this.width = 80;
         this.height = 80;
         this.name = "Squash";
-        this.cost = 50;
         this.health = 100;
         this.attack_damage = 5000;
         this.attack_speed = 0;
         this.range = 1;
-        this.cooldown = 20;
+        alive = true;
+
         renderTexture();
     }
 
@@ -48,7 +48,7 @@ public class Squash extends Plant implements GameObject {
 
     @Override
     public void draw(Graphics2D g2d) {
-        g2d.drawImage(texture[curFrame], Position_X, Position_Y, Position_X + width, Position_Y + width, 0, 0, 185, 185, gamePanel);
+        g2d.drawImage(texture[curFrame], Position_X, Position_Y, Position_X + width, Position_Y + width, 0, 0, 185, 185, gameManager);
     }
 
     @Override
@@ -61,4 +61,28 @@ public class Squash extends Plant implements GameObject {
         frameCount++;
     }
 
+    @Override
+    public boolean isAlive() {
+        return alive;
+    }
+
+    @Override
+    public int getCooldown() {
+        return 20;
+    }
+
+    @Override
+    public int getCost() {
+        return 50;
+    }
+
+    @Override
+    public String getName() {
+        return "Squash";
+    }
+
+    @Override
+    public void setRow(int i) {
+        row = i;
+    }
 }
