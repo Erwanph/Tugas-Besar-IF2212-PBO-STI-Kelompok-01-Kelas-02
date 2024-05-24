@@ -19,11 +19,10 @@
 3. [Features](#features)
 4. [Technologies Used](#technologies-used)
 5. [How to Run Game](#how-run)
-6. [Game Sneak Peek](#game-sneak-peek)
 7. [Project Status](#project-status)
 
 ## General Information
-"Michael vs. Lalapan" merupakan permainan berbasis Command Line Interface (CLI)  yang dibuat menggunakan bahasa pemrograman Java. Game ini merupakan sebuah permainan imitasi dari "Plant vs. Zombie" yang menawarkan pengalaman unik dan menghibur dengan gameplay yang sederhana namun menarik. Seperti "Plant vs. Zombie" pada umumnya, pemain akan memilih beberapa "Plant" sebagai pasukannya, yang harus berhadapan dengan berbagai jenis lalapan (Zombie) yang terus berdatangan.
+"Michael vs. Lalapan" adalah permainan imitasi “Plant vs. Zombie” berbasis Command Line Interface (CLI) yang sudah dilengkapi Graphic User Interface (GUI), dikembangkan dengan bahasa pemrograman Java. Permainan imitasi yang sederhana tapi sudah pasti menarik. Bersama pasukan “plant”, Michael (user) harus menumpaskan berbagai jenis lalapan (zombie) yang terus berdatangan, sebelum para lalapan melahap otak Michael.....
 
 <a name="member-list"></a>
 
@@ -72,12 +71,8 @@ gradlew.bat run
 
 You can explore more about gradle [here](https://guides.gradle.org/creating-new-gradle-builds/)
 
-<a name="game-sneak-peek"></a>
-
-## Game Sneak Peek
-
 
 <a name="project-status">
 
 ## Project Status
-Status Proyek: _on going_
+Status Proyek: _Finish_
