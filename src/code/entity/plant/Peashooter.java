@@ -12,7 +12,7 @@ import src.code.func.GameManager;
 public class Peashooter extends Plant implements GameObject {
 
     private Image[] texture;
-    private Point[][] positionArray;
+    public static Point[][] positionArray;
     private int curFrame = 0; // current frame to be drawn
     private int frameCount = 0; // internal clock (one frame is 0.01 seconds)
 
@@ -28,7 +28,6 @@ public class Peashooter extends Plant implements GameObject {
         this.range = -1;
         this.cooldown = 10;
         renderTexture();
-        generatePosition();
     }
 
     private void renderTexture() {
@@ -49,7 +48,7 @@ public class Peashooter extends Plant implements GameObject {
 
     }
 
-    private void generatePosition() {
+    public static Point getPosition(int i, int j) {
         positionArray = new Point[6][9];
         positionArray[0][0] = new Point(254, 189);
         positionArray[0][1] = new Point(331, 182);
@@ -91,9 +90,6 @@ public class Peashooter extends Plant implements GameObject {
         positionArray[5][6] = new Point(732, 615);
         positionArray[5][7] = new Point(810, 626);
         positionArray[5][8] = new Point(891, 616);
-    }
-
-    public Point getPosition(int i, int j) {
         return positionArray[i][j];
     }
 

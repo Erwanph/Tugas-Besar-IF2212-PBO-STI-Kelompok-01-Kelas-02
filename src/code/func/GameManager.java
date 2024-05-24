@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,8 +32,10 @@ public class GameManager extends JPanel implements Runnable, MouseInputListener 
     public BackgroundManager backgroundManager;
     // DeckManager handle the operations within game deck
     public DeckManager deckManager;
-    // renderList contains all the game object to be rendered
-    public List<GameObject> renderList;
+    // objectList contains all the game object
+    public List<GameObject> objectList;
+    // positionArray contains the placing coordinate for every grid
+    public Point[][] positionArray;
     // Game state
     private String gameState;
 
@@ -53,8 +56,8 @@ public class GameManager extends JPanel implements Runnable, MouseInputListener 
         backgroundManager = new BackgroundManager(this);
         // Initiate deckManager
         deckManager = new DeckManager(this);
-        // Initiate renderList
-        renderList = new ArrayList<>();
+        // Initiate objectList
+        objectList = new ArrayList<>();
 
         // Default gameState
         setGameState("MENU");
@@ -99,7 +102,6 @@ public class GameManager extends JPanel implements Runnable, MouseInputListener 
             delta += (curTime - lastTime) / interval;
             // Update last draw time
             lastTime = curTime;
-
             // Draw frame
             if (delta >= 1) {
                 update(); // Update every component
@@ -113,7 +115,7 @@ public class GameManager extends JPanel implements Runnable, MouseInputListener 
     // Update method
     private void update() {
         // update every GameObject in the render list
-        for (Iterator<GameObject> i = renderList.iterator(); i.hasNext();) {
+        for (Iterator<GameObject> i = objectList.iterator(); i.hasNext();) {
             (i.next()).update();
         }
     }
@@ -132,8 +134,8 @@ public class GameManager extends JPanel implements Runnable, MouseInputListener 
         // Draw deck
         deckManager.drawDeck(g2D);
 
-        // Draw all GameObject in the renderList
-        for (Iterator<GameObject> i = renderList.iterator(); i.hasNext();) {
+        // Draw all GameObject in the objectList
+        for (Iterator<GameObject> i = objectList.iterator(); i.hasNext();) {
             (i.next()).draw(g2D);
         }
 

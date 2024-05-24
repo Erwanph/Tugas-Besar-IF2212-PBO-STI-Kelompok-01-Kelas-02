@@ -6,7 +6,10 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import javax.imageio.ImageIO;
+import src.code.entity.GameObject;
+import src.code.entity.plant.Peashooter;
 
 public class BackgroundManager {
 
@@ -196,7 +199,12 @@ public class BackgroundManager {
         }
     }
 
-    public final void handleClick(int x, int y) {
+    /**
+     *
+     * @param x
+     * @param y
+     */
+    public final void handleClick(int x, int y) throws SecurityException {
         switch (gameManager.getGameState()) {
             case "MENU" -> {
                 if (x >= 609 && x <= 876 && y >= 387 && y <= 448) {
@@ -227,10 +235,24 @@ public class BackgroundManager {
                 }
             }
             case "GAME" -> {
+                // Click happening inside deck
                 if (checkPoint(x, y, 95, 5, 557, 110)) {
                     int index = (x - 95) / 77;
                     if (index < gameManager.deckManager.deck.size()) {
                         selectedCard = index;
+                    }
+                } // Click happening inside planting area
+                else if (checkPoint(x, y, 250, 210, 952, 720)) {
+                    int row = (y - 210) / 85;
+                    int col = (x - 250) / 78;
+                    try {
+                        try {
+                            gameManager.objectList.add((GameObject) gameManager.plantAlmanac.get(gameManager.deckManager.deck.get(selectedCard)).getConstructor(int.class, int.class, GameManager.class).newInstance(Peashooter.getPosition(row, col).x, Peashooter.getPosition(row, col).y, gameManager));
+                        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                            System.out.println("CANNOT INSTANTIATE");
+                        }
+                    } catch (NoSuchMethodException ex) {
+                        System.out.println("Constructor NOT FOUND!");
                     }
                 }
 
